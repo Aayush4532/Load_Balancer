@@ -7,5 +7,5 @@ import (
 )
 
 func RegisterServerRoutes(r *gin.RouterGroup) {
-	r.GET("/api", controllers.ServerApiHandler)
+	r.Any("/*proxy", controllers.ServerApiHandler)
 }

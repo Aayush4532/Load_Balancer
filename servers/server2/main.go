@@ -38,7 +38,7 @@ func registerWithLoadBalancer() {
 
 func main() {
 	r := gin.Default()
-	r.GET("/api", handler)
+	r.GET("/", handler)
 
 	log.Println("Server 2 running on :5172")
 	registerWithLoadBalancer()

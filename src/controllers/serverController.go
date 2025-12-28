@@ -9,15 +9,40 @@ import (
 )
 
 func ServerApiHandler(c *gin.Context) {
-	num := config.GetCurrentRobin()
-	url := config.Room[num].Url + "/api"
+	method := c.Request.Method
+	proxyPath := c.Param("proxy")
+	query := c.Request.URL.RawQuery
+	body := c.Request.Body
 
-	resp, err := http.Get(url)
+	base := config.GetCurrentRobin()
+
+	targetURL := base + proxyPath
+	if query != "" {
+		targetURL += "?" + query
+	}
+
+	req, err := http.NewRequest(method, targetURL, body)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Failed to reach server"})
+		c.JSON(500, gin.H{"error": "failed to create request"})
+		return
+	}
+
+	req.Header = c.Request.Header.Clone()
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		c.JSON(502, gin.H{"error": "backend down"})
 		return
 	}
 	defer resp.Body.Close()
+
 	c.Status(resp.StatusCode)
+	for k, v := range resp.Header {
+		for _, val := range v {
+			c.Writer.Header().Add(k, val)
+		}
+	}
+
 	io.Copy(c.Writer, resp.Body)
 }

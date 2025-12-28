@@ -27,7 +27,7 @@ func serverHandler(c *gin.Context) {
 func main() {
 	r := gin.Default();
 	r.POST("/join", serverHandler);
-	serverGroup := r.Group("/server");
+	serverGroup := r.Group("/api");
 	routes.RegisterServerRoutes(serverGroup);
 	r.Run(":8000");
 }
