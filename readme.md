@@ -24,10 +24,14 @@
 
                client hits -> http.xyz.com/api/ping
                load balancer -> http.server1.com/api/ping.
-               at this point if load balancer couldn't complete it request or say server 1 is down that doesn't mean user should not get service, immediately we should remove that server from the active healthy list so that another user should not recieve this same error while new req should be transfer to the another server and serve the response to the client.
+               at this point if load balancer couldn't complete it request or say server 1 is down,
+              that doesn't mean user should not get service, immediately we should remove that server
+              from the active healthy list so that another user should not recieve this same error,
+              while new req should be transfer to the another server and serve the response to the client.
 
                basically, 
                load balancer <- status 500 <- http.server1.com/api/ping.
                then 
                load balancer -> http.server2.com/ping.
    -------------------------------------
+
