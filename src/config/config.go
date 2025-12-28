@@ -1,6 +1,9 @@
 package config
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type Client struct {
 	Url string
@@ -18,9 +21,12 @@ func JoinServer(client Client) {
 	ServerArray = append(ServerArray, client);
 }
 
-func GetCurrentRobin() string {
+func GetCurrentRobin() (string, error) {
 	SerArrMutex.Lock()
 	defer SerArrMutex.Unlock()
+	if len(ServerArray) == 0 {
+		return "", fmt.Errorf("no servers available")
+	}
 	index = ((index + 1) % len(ServerArray));
-	return ServerArray[index].Url;
+	return ServerArray[index].Url, nil;
 }

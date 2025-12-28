@@ -36,9 +36,16 @@ func registerWithLoadBalancer() {
 	log.Println("Server 2 registered with load balancer")
 }
 
+func pinghandler(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "pong from Server 2",
+	})
+}
+
 func main() {
 	r := gin.Default()
-	r.GET("/", handler)
+	r.GET("/api", handler)
+	r.GET("/ping", pinghandler);
 
 	log.Println("Server 2 running on :5172")
 	registerWithLoadBalancer()

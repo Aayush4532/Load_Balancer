@@ -14,9 +14,13 @@ func ServerApiHandler(c *gin.Context) {
 	query := c.Request.URL.RawQuery
 	body := c.Request.Body
 
-	base := config.GetCurrentRobin()
+	base, err := config.GetCurrentRobin()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "it's not you, it's us, comeback later"})
+		return
+	}
 
-	targetURL := base + proxyPath
+	targetURL := base + "/api" + proxyPath
 	if query != "" {
 		targetURL += "?" + query
 	}
@@ -32,7 +36,7 @@ func ServerApiHandler(c *gin.Context) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		c.JSON(502, gin.H{"error": "backend down"})
+		c.JSON(500, gin.H{"error": "backend down"})
 		return
 	}
 	defer resp.Body.Close()
